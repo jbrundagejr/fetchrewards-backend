@@ -13,7 +13,8 @@ If you navigate to http://localhost:3000, you should now see that you are runnin
 
 This API has three fetch end points as described below.
 
-POST to http://localhost:3000/transactions
+  -URL: "http://localhost:3000/transactions"
+  -Method: "POST"
   -Headers: {Content-type: "application/json"}
   -Body: {"points": integer, "payer_id": integer}
   -Return:
@@ -26,7 +27,8 @@ POST to http://localhost:3000/transactions
             }
       }   
         
-PATCH to http://localhost:3000/spend
+  -URL: "http://localhost:3000/spend"
+  -Method: "PATCH"
   -Headers: {Content-type: "application/json"}
   -Body: {"points": int}
   -Return:
@@ -37,7 +39,8 @@ PATCH to http://localhost:3000/spend
         }
       ]
       
-GET to http://localhost:3000/pointbalances
+  -URL: "http://localhost:3000/pointbalances"
+  -Method: "GET"
   -Return: 
     {
       "payer.name": integer(point balance)
