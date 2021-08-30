@@ -20,25 +20,25 @@ class PayersController < ApplicationController
     while spend_points > 0 do
       # loop through the sorted arrays and first see if the first transaction is less than the value passed in. If so,
       if sorted_transactions[0].points <= spend_points
-        # set temporary variable to the balance available from the first transaction
-        temp = sorted_transactions[0].points
         # find the payer associated with the transaction
         payer = Payer.find(sorted_transactions[0]["payer_id"])
+        # set temporary variable to the balance available from the first payer
+        temp = sorted_transactions[0].points
+        # check to see if the payer has a positive balance. if not, skip that transaction
+        if(payer.points == 0) then sorted_transactions.shift() end
         # subtract the balance available from the value passed in 
         spend_points = spend_points - temp
         # subtract the same points from the payer's available balance associated with that transaction
         Payer.update(payer.id, :points => payer.points = payer.points - temp)
         # push the name of the payer and the amount subtracted from their account into our return array
         return_array.push({"payer": sorted_transactions[0].payer.name, "points": -temp})
-        # delete the transaction from the loop and from the database
+        # delete the transaction from the loop
         Transaction.delete(sorted_transactions.shift())
       else 
         # if the transaction is greater than the value passed in, first find the payer associated with the transaction
         payer = Payer.find(sorted_transactions[0]["payer_id"])
         # update that payer's point balance based on the value passed in
         Payer.update(payer.id, :points => payer.points = payer.points - spend_points)
-        # update 
-        Transaction.update(sorted_transactions[0].id, :points => sorted_transactions[0].points = sorted_transactions[0].points - spend_points)
         # push the name of the payer and the value passed in as a negative to reflect what was spent
         return_array.push({"payer": sorted_transactions[0].payer.name, "points": -spend_points})
         # end the loop by setting the spend points to zero
