@@ -1,0 +1,3 @@
+class Payer < ApplicationRecord
+
+end
