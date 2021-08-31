@@ -22,10 +22,10 @@ class PayersController < ApplicationController
       if sorted_transactions[0].points <= spend_points
         # find the payer associated with the transaction
         payer = Payer.find(sorted_transactions[0]["payer_id"])
+        # check to see if the payer has a positive balance. if not, skip that transaction
+        if(payer.points === 0) then sorted_transactions.shift() end
         # set temporary variable to the balance available from the first payer
         temp = sorted_transactions[0].points
-        # check to see if the payer has a positive balance. if not, skip that transaction
-        if(payer.points == 0) then sorted_transactions.shift() end
         # subtract the balance available from the value passed in 
         spend_points = spend_points - temp
         # subtract the same points from the payer's available balance associated with that transaction
@@ -46,26 +46,28 @@ class PayersController < ApplicationController
       end
     end
 
-  #  This is to eliminate duplicates in our return array if the same payer was used more than once.
-  # for the length of our return array,
-    (0..return_array.length - 1).each do |i|
-      # if there is a second element,
-      if return_array[i+1]
-        # loop through the array with two markers
-        (0..return_array.length-1).each do |j|
-          # if the two markers point to the same key of "payer",
-          if return_array[i][:payer] === return_array[j][:payer] 
-            # combine those two values under the key of points and set them to the first marker's value
-            return_array[i][:points] = return_array[i][:points] + return_array[j][:points]
-          end
-        end
-      end
-    end
-    
-    # remove any elements from our return array that have the same name as they will have the same key/value pair of "points" to value
-    # due to the loop above
-    return_array.uniq!{|payer| payer[:payer]}
-    # render our return array in JSON format
+    # NEEDS TO BE REWORKED
+
+  # #  This is to eliminate duplicates in our return array if the same payer was used more than once.
+  # # for the length of our return array,
+  #   (0..return_array.length - 1).each do |i|
+  #     # if there is a second element,
+  #     if return_array[i+1]
+  #       # loop through the array with two markers
+  #       (0..return_array.length-1).each do |j|
+  #         # if the two markers point to the same key of "payer",
+  #         if return_array[i][:payer] === return_array[j][:payer] 
+  #           # combine those two values under the key of points and set them to the first marker's value
+  #           return_array[i][:points] = return_array[i][:points] + return_array[j][:points]
+  #         end
+  #       end
+  #     end
+  #   end
+
+  #   # remove any elements from our return array that have the same name as they will have the same key/value pair of "points" to value
+  #   # due to the loop above
+  #   return_array.uniq!{|payer| payer[:payer]}
+  #   # render our return array in JSON format
     render json: return_array
   end
 
